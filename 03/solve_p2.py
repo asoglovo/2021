@@ -2,8 +2,8 @@ import fileinput
 
 
 def find_rating(report_nums, bit_criteria_fn, bit_pos=0) -> int:
-    zeroes = [numbers for numbers in report_nums if numbers[bit_pos] == 0]
-    ones = [numbers for numbers in report_nums if numbers[bit_pos] == 1]
+    zeroes = [num_list for num_list in report_nums if num_list[bit_pos] == 0]
+    ones = [num_list for num_list in report_nums if num_list[bit_pos] == 1]
     candidates = bit_criteria_fn(zeroes, ones)
 
     return bin_string_to_int(candidates[0]) if len(candidates) == 1 \
