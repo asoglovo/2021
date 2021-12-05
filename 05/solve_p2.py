@@ -1,5 +1,5 @@
 import fileinput
-from typing import Counter
+from collections import Counter
 
 from segment import parse_segment, points_in_segment
 
