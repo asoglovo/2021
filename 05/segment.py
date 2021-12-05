@@ -1,5 +1,4 @@
 import re
-from math import copysign
 from typing import Dict, List, Tuple
 
 Point = Tuple[int, int]
