@@ -12,13 +12,13 @@ def total_fish_produced(fish_timer, simulation_duration):
     """
     days = days_when_fish_produced(fish_timer, simulation_duration)
     return len(days) + sum(
-        [__total_produced_fish_spawning_at(day, simulation_duration)
+        [total_produced_fish_spawning_at(day, simulation_duration)
          for day in days]
     )
 
 
 @cache
-def __total_produced_fish_spawning_at(day, simulation_duration):
+def total_produced_fish_spawning_at(day, simulation_duration):
     """
     Given the day where a new fish spawns and the simulation duration, computes
     the total number of produced fish by this fish and all its sub-generations.
@@ -26,7 +26,7 @@ def __total_produced_fish_spawning_at(day, simulation_duration):
     next_gen_days = spawn_days(day, simulation_duration)
 
     return len(next_gen_days) + sum(
-        [__total_produced_fish_spawning_at(day, simulation_duration)
+        [total_produced_fish_spawning_at(day, simulation_duration)
          for day in next_gen_days]
     )
 
