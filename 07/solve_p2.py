@@ -1,4 +1,4 @@
-from crabs import (fuel_cost_for_moving_all, improve_target_position,
+from crabs import (fuel_cost_for_moving_all, improve_solution,
                    is_optimal_target_position)
 
 if __name__ == '__main__':
@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     while not is_optimal_target_position(h_positions, optimal_h_position):
         iterations += 1
-        optimal_h_position, optimal_fuel_cost = improve_target_position(
+        optimal_h_position, optimal_fuel_cost = improve_solution(
             h_positions,
             optimal_h_position
         )

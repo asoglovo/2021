@@ -19,7 +19,7 @@ def is_optimal_target_position(h_positions, target_position):
     return True
 
 
-def improve_target_position(h_positions, target_position):
+def improve_solution(h_positions, target_position):
     """
     Given the current target position, this function tries to improve it by
     looking for a contiguous position that minimizes the fuel cost for moving
