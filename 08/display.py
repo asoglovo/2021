@@ -14,7 +14,7 @@ nine = set('abcdfg')
 
 all_numbers = (zero, one, two, three, four, five, six, seven, eight, nine)
 all_letters = ('a', 'b', 'c', 'd', 'e', 'f', 'g')
-all_permutations = list(permutations(all_letters, len(all_letters)))
+all_possible_mappings = list(permutations(all_letters, len(all_letters)))
 
 digits_by_length = {
     2: (one,),
@@ -25,8 +25,11 @@ digits_by_length = {
     7: (eight,),
 }
 
+SegmentsMapping = Tuple[str, ...]
+Segments = str
 
-def find_segments_mapping(patterns: List[str]) -> Sequence[str]:
+
+def find_segments_mapping(patterns: List[Segments]) -> SegmentsMapping:
     """
     Given the measured segment patterns, finds the mapping of the segments such that
     all of the mapped patterns exist as a valid digit.
@@ -37,22 +40,35 @@ def find_segments_mapping(patterns: List[str]) -> Sequence[str]:
     )
 
 
-def apply_mapping_to_segments(mapping: Sequence[str], segments_list: List[str]) -> List[str]:
-    return [__map_digit(segments, mapping) for segments in segments_list]
+def apply_mapping_to_segments(
+    mapping: SegmentsMapping,
+    segments_list: List[Segments]
+) -> List[Segments]:
+    """
+    Retuns a list with the mapped segments: the result of applying the given mapping
+    to each of the input segments.
+    """
+    return [__map_segments(segments, mapping) for segments in segments_list]
 
 
-def segments_to_number(digits: List[str]) -> int:
-    return int(
-        ''.join([__digit_from_segments(digit) for digit in digits])
-    )
+def segments_to_number(segments_list: List[Segments]) -> int:
+    """
+    Computes the number represented by the given segments, where each segment
+    is a single digit.
+
+    For example, the segments ['acdfg', 'abcdefg', 'abdefg'] would yield the 
+    number 386.
+    """
+    digits = [__digit_from_segments(segments) for segments in segments_list]
+    return int(''.join(digits))
 
 
-def __compute_feasible_mappings(patterns: List[str]) -> List[Tuple[str, ...]]:
+def __compute_feasible_mappings(patterns: List[Segments]) -> List[SegmentsMapping]:
     """
     From all the possible mappings which can be used, this function returns only 
     those that are feasible given the input patterns.
     """
-    all_mappings = all_permutations.copy()
+    all_mappings = all_possible_mappings.copy()
     possible_mappings = __possible_letter_mappings(patterns)
 
     for i, letter in enumerate(all_letters):
@@ -88,29 +104,30 @@ def __possible_letter_mappings(patterns: List[str]) -> Dict[str, Set[str]]:
     return dict(letter_mappings)
 
 
-def __is_valid_mapping(patterns: List[str], mapping: List[str]) -> bool:
+def __is_valid_mapping(
+    patterns: List[Segments],
+    mapping: SegmentsMapping
+) -> bool:
     """
     Determines whether the given mapping produces all valid patterns.
     """
-    mapped_patterns = [__map_digit(pattern, mapping) for pattern in patterns]
+    mapped_patterns = [__map_segments(pattern, mapping)
+                       for pattern in patterns]
 
     return all(__is_valid_pattern(pattern) for pattern in mapped_patterns)
 
 
-def __map_digit(digit: str, mapping: List[str]) -> str:
-    """
-    Applies the mapping to a single digit, returning the corrected digit segments.
-    """
+def __map_segments(segments: Segments, mapping: SegmentsMapping) -> str:
     return ''.join(
-        [mapping[all_letters.index(letter)] for letter in digit]
+        [mapping[all_letters.index(letter)] for letter in segments]
     )
 
 
-def __is_valid_pattern(pattern: str) -> bool:
+def __is_valid_pattern(pattern: Segments) -> bool:
     return set(pattern) in all_numbers
 
 
-def __digit_from_segments(segments: str) -> str:
+def __digit_from_segments(segments: Segments) -> str:
     segments_set = set(segments)
 
     if segments_set == zero:
