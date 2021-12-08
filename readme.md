@@ -8,3 +8,11 @@ To run the solutions from the command line:
 ```sh
 $ python3 solve.py < input.py
 ```
+
+## File Naming
+
+- _test_input.txt_: the input data in the example.
+- _input.txt_: the problem's input
+- _solve.py_: solution to the first part of each challenge
+- _solve_p2.py_: solution to the second part of each challenge
+  
