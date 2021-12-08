@@ -25,3 +25,14 @@ class DisplayTest(TestCase):
         expected = 5353
 
         self.assertTrue(expected, segments_to_number(digits))
+
+    def test_find_corrected_number(self):
+        patterns = ['acedgfb', 'cdfbe', 'gcdfa', 'fbcad',
+                    'dab', 'cefabd', 'cdfgeb', 'eafb', 'cagedb', 'ab']
+        output = ['cdfeb', 'fcadb', 'cdfeb', 'cdbaf']
+
+        mapping = find_segments_mapping(patterns)
+        corrected_segments = apply_mapping_to_segments(mapping, output)
+        number = segments_to_number(corrected_segments)
+
+        self.assertEqual(5353, number)
