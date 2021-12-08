@@ -1,5 +1,5 @@
 from itertools import permutations
-from typing import Dict, List, Set
+from typing import Dict, List, Sequence, Set, Tuple
 
 zero = set('abcefg')
 one = set('cf')
@@ -26,36 +26,45 @@ digits_by_length = {
 }
 
 
-def identify_output_number(patterns: List[str], output: List[str]) -> int:
+def find_segments_mapping(patterns: List[str]) -> Sequence[str]:
     """
-    Analyzes the given patterns, and figures out the wire connections in the four 
-    output seven-segment displays, from which the number can be derived.
+    Given the measured segment patterns, finds the mapping of the segments such that
+    all of the mapped patterns exist as a valid digit.
     """
     mappings = __compute_feasible_mappings(patterns)
-    valid_mappings = [
+    return next(
         mapping for mapping in mappings if __is_valid_mapping(patterns, mapping)
-    ]
-    assert len(valid_mappings) == 1, 'More than one valid mapping found'
-
-    return __number_from_mapped_output(valid_mappings[0], output)
+    )
 
 
-def __compute_feasible_mappings(patterns: List[str]):
+def apply_mapping_to_segments(mapping: Sequence[str], segments_list: List[str]) -> List[str]:
+    return [__map_digit(segments, mapping) for segments in segments_list]
+
+
+def segments_to_number(digits: List[str]) -> int:
+    return int(
+        ''.join([__digit_from_segments(digit) for digit in digits])
+    )
+
+
+def __compute_feasible_mappings(patterns: List[str]) -> List[Tuple[str, ...]]:
     """
-    From all the possible permutations which can be used as mappings, this function
-    returns only those that are feasible given the input patterns.
+    From all the possible mappings which can be used, this function returns only 
+    those that are feasible given the input patterns.
     """
-    permutations = all_permutations.copy()
-    mappings = __search_possible_letter_mappings(patterns)
+    all_mappings = all_permutations.copy()
+    possible_mappings = __possible_letter_mappings(patterns)
 
     for i, letter in enumerate(all_letters):
-        permutations = [perm for perm in permutations
-                        if perm[i] in mappings[letter]]
+        valid_outputs = possible_mappings[letter]
+        all_mappings = [
+            mapping for mapping in all_mappings if mapping[i] in valid_outputs
+        ]
 
-    return permutations
+    return all_mappings
 
 
-def __search_possible_letter_mappings(patterns: List[str]) -> Dict[str, Set[str]]:
+def __possible_letter_mappings(patterns: List[str]) -> Dict[str, Set[str]]:
     """
     Given the read patterns, computes all possible letter mappings.
 
@@ -83,14 +92,17 @@ def __is_valid_mapping(patterns: List[str], mapping: List[str]) -> bool:
     """
     Determines whether the given mapping produces all valid patterns.
     """
-    mapped_patterns = [__map_pattern(pattern, mapping) for pattern in patterns]
+    mapped_patterns = [__map_digit(pattern, mapping) for pattern in patterns]
 
     return all(__is_valid_pattern(pattern) for pattern in mapped_patterns)
 
 
-def __map_pattern(pattern: str, mapping: List[str]) -> str:
+def __map_digit(digit: str, mapping: List[str]) -> str:
+    """
+    Applies the mapping to a single digit, returning the corrected digit segments.
+    """
     return ''.join(
-        [mapping[all_letters.index(letter)] for letter in pattern]
+        [mapping[all_letters.index(letter)] for letter in digit]
     )
 
 
@@ -98,12 +110,7 @@ def __is_valid_pattern(pattern: str) -> bool:
     return set(pattern) in all_numbers
 
 
-def __number_from_mapped_output(mapping: List[str], output: List[str]) -> int:
-    segments_list = [__map_pattern(pattern, mapping) for pattern in output]
-    return int(''.join([__digit_from_segments(segments) for segments in segments_list]))
-
-
-def __digit_from_segments(segments: List[str]) -> str:
+def __digit_from_segments(segments: str) -> str:
     segments_set = set(segments)
 
     if segments_set == zero:
