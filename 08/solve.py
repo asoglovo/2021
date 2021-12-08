@@ -1,15 +1,15 @@
 import fileinput
 
-zero = set('abcefg')
-one = set('cf')
-two = set('acdeg')
-three = set('acdfg')
-four = set('bcdf')
-five = set('abdfg')
-six = set('abdefg')
-seven = set('acf')
-eight = set('abcdefg')
-nine = set('abcdfg')
+zero = 'abcefg'
+one = 'cf'
+two = 'acdeg'
+three = 'acdfg'
+four = 'bcdf'
+five = 'abdfg'
+six = 'abdefg'
+seven = 'acf'
+eight = 'abcdefg'
+nine = 'abcdfg'
 
 
 def parse_line(line):
