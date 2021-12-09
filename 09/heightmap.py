@@ -3,6 +3,7 @@ from typing import Dict, List, Set, Tuple
 
 
 HeightMap = List[List[int]]
+Basin = Set[Tuple[int, int]]
 
 height_outside_map = 1000000
 
@@ -35,26 +36,26 @@ def is_low_point(heightmap: HeightMap, row: int, col: int) -> bool:
     """
     height = heightmap[row][col]
 
-    left_height = __get_heightmap_height(heightmap, row, col - 1)
+    left_height = __get_height(heightmap, row, col - 1)
     if height >= left_height:
         return False
 
-    right_height = __get_heightmap_height(heightmap, row, col + 1)
+    right_height = __get_height(heightmap, row, col + 1)
     if height >= right_height:
         return False
 
-    up_height = __get_heightmap_height(heightmap, row - 1, col)
+    up_height = __get_height(heightmap, row - 1, col)
     if height >= up_height:
         return False
 
-    down_height = __get_heightmap_height(heightmap, row + 1, col)
+    down_height = __get_height(heightmap, row + 1, col)
     if height >= down_height:
         return False
 
     return True
 
 
-def __get_heightmap_height(heightmap: HeightMap, row: int, col: int) -> int:
+def __get_height(heightmap: HeightMap, row: int, col: int) -> int:
     """
     Returns the height of the heightmap at the given location.
     If the index is out ouf bounds, returns a large number.
@@ -68,7 +69,7 @@ def __get_heightmap_height(heightmap: HeightMap, row: int, col: int) -> int:
     return heightmap[row][col]
 
 
-def find_low_point_basin_size(heightmap: HeightMap, low_point: Dict):
+def find_basin_size(heightmap: HeightMap, low_point: Dict):
     """
     A basin is all locations that eventually flow downward to a single low point. 
     Therefore, every low point has a basin, although some basins are very small. 
@@ -79,26 +80,22 @@ def find_low_point_basin_size(heightmap: HeightMap, low_point: Dict):
     low point.
     """
     i, j = low_point['pos']
-    basin_positions = __basin_positions_around_recursive(heightmap, i, j)
+    basin_positions = __find_basin_recursive(heightmap, i, j)
 
     return len(basin_positions) + 1
 
 
-def __basin_positions_around_recursive(
-    heightmap: HeightMap,
-    row: int,
-    col: int
-) -> Set[Tuple[int, int]]:
+def __find_basin_recursive(heightmap: HeightMap, row: int, col: int) -> Basin:
     """
     Returns a list of neighbour positions from the given location that are valid 
     for flowing to the given position. It keeps looking for neighbours until it
     finds one with a height of 9 or a border.
     """
-    basin_positions = __basin_positions_around(heightmap, row, col)
+    basin_positions = __find_basin(heightmap, row, col)
 
     neighbour_basin_pos = set()
     for i, j in basin_positions:
-        positions = __basin_positions_around_recursive(heightmap, i, j)
+        positions = __find_basin_recursive(heightmap, i, j)
         neighbour_basin_pos.update(
             [pos for pos in positions if pos not in basin_positions]
         )
@@ -108,11 +105,7 @@ def __basin_positions_around_recursive(
     return basin_positions
 
 
-def __basin_positions_around(
-    heightmap: HeightMap,
-    row: int,
-    col: int
-) -> Set[Tuple[int, int]]:
+def __find_basin(heightmap: HeightMap, row: int, col: int) -> Basin:
     """
     Returns a list of neighbour positions from the given location that are valid 
     for flowing to the given position.
@@ -120,19 +113,19 @@ def __basin_positions_around(
     heigh = heightmap[row][col]
     positions = set()
 
-    left_height = __get_heightmap_height(heightmap, row, col - 1)
+    left_height = __get_height(heightmap, row, col - 1)
     if heigh < left_height and left_height < 9:
         positions.add((row, col - 1))
 
-    right_height = __get_heightmap_height(heightmap, row, col + 1)
+    right_height = __get_height(heightmap, row, col + 1)
     if heigh < right_height and right_height < 9:
         positions.add((row, col + 1))
 
-    up_height = __get_heightmap_height(heightmap, row - 1, col)
+    up_height = __get_height(heightmap, row - 1, col)
     if heigh < up_height and up_height < 9:
         positions.add((row - 1, col))
 
-    down_height = __get_heightmap_height(heightmap, row + 1, col)
+    down_height = __get_height(heightmap, row + 1, col)
     if heigh < down_height and down_height < 9:
         positions.add((row + 1, col))
 

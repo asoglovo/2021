@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from heightmap import find_low_point_basin_size, find_low_points
+from heightmap import find_basin_size, find_low_points
 
 
 class SmokeTest(TestCase):
@@ -30,17 +30,17 @@ class SmokeTest(TestCase):
         low_point_one = {'pos': (0, 1)}
         self.assertEqual(
             3,
-            find_low_point_basin_size(self.heightmap, low_point_one)
+            find_basin_size(self.heightmap, low_point_one)
         )
 
         low_point_two = {'pos': (0, 9)}
         self.assertEqual(
             9,
-            find_low_point_basin_size(self.heightmap, low_point_two)
+            find_basin_size(self.heightmap, low_point_two)
         )
 
         low_point_three = {'pos': (2, 2)}
         self.assertEqual(
             14,
-            find_low_point_basin_size(self.heightmap, low_point_three)
+            find_basin_size(self.heightmap, low_point_three)
         )

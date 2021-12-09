@@ -1,6 +1,6 @@
 import fileinput
 
-from heightmap import find_low_point_basin_size, find_low_points
+from heightmap import find_basin_size, find_low_points
 
 
 def read_heightmap():
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     heighmap = read_heightmap()
     lows = find_low_points(heighmap)
     basin_sizes = [
-        find_low_point_basin_size(heighmap, low) for low in lows
+        find_basin_size(heighmap, low) for low in lows
     ]
     basin_sizes.sort(reverse=True)
     a, b, c, *rest = basin_sizes
