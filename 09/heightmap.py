@@ -4,6 +4,8 @@ from typing import Dict, List, Set, Tuple
 
 HeightMap = List[List[int]]
 
+height_outside_map = 1000000
+
 
 def find_low_points(heightmap: HeightMap):
     """
@@ -58,10 +60,10 @@ def __get_heightmap_height(heightmap: HeightMap, row: int, col: int) -> int:
     If the index is out ouf bounds, returns a large number.
     """
     if not 0 <= row < len(heightmap):
-        return 1000000
+        return height_outside_map
 
     if not 0 <= col < len(heightmap[row]):
-        return 1000000
+        return height_outside_map
 
     return heightmap[row][col]
 
