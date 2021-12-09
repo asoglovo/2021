@@ -3,7 +3,7 @@ from unittest import TestCase
 from heightmap import find_basin_size, find_low_points
 
 
-class SmokeTest(TestCase):
+class HeightmapTest(TestCase):
 
     heightmap = [
         [2, 1, 9, 9, 9, 4, 3, 2, 1, 0],
