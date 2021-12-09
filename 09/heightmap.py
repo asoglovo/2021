@@ -87,14 +87,19 @@ def __basin_positions_around_recursive(
     row: int,
     col: int
 ) -> Set[Tuple[int, int]]:
+    """
+    Returns a list of neighbour positions from the given location that are valid 
+    for flowing to the given position. It keeps looking for neighbours until it
+    finds one with a height of 9 or a border.
+    """
     basin_positions = __basin_positions_around(heightmap, row, col)
 
     neighbour_basin_pos = set()
     for i, j in basin_positions:
-        neighbour_basin_pos.update([
-            pos for pos in __basin_positions_around_recursive(heightmap, i, j)
-            if pos not in basin_positions
-        ])
+        positions = __basin_positions_around_recursive(heightmap, i, j)
+        neighbour_basin_pos.update(
+            [pos for pos in positions if pos not in basin_positions]
+        )
 
     basin_positions.update(neighbour_basin_pos)
 
@@ -107,8 +112,8 @@ def __basin_positions_around(
     col: int
 ) -> Set[Tuple[int, int]]:
     """
-    Returns a list of positions from the given location that are valid for 
-    flowing to a low point.
+    Returns a list of neighbour positions from the given location that are valid 
+    for flowing to the given position.
     """
     heigh = heightmap[row][col]
     positions = set()
