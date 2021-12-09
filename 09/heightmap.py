@@ -1,5 +1,5 @@
 
-from typing import List
+from typing import Dict, List, Set, Tuple
 
 
 HeightMap = List[List[int]]
@@ -64,3 +64,69 @@ def __get_heightmap_height(heightmap: HeightMap, row: int, col: int) -> int:
         return 1000000
 
     return heightmap[row][col]
+
+
+def find_low_point_basin_size(heightmap: HeightMap, low_point: Dict):
+    """
+    A basin is all locations that eventually flow downward to a single low point. 
+    Therefore, every low point has a basin, although some basins are very small. 
+    Locations of height 9 do not count as being in any basin, and all other locations 
+    will always be part of exactly one basin.
+
+    The size of a basin is the number of locations within the basin, including the 
+    low point.
+    """
+    i, j = low_point['pos']
+    basin_positions = __basin_positions_around_recursive(heightmap, i, j)
+
+    return len(basin_positions) + 1
+
+
+def __basin_positions_around_recursive(
+    heightmap: HeightMap,
+    row: int,
+    col: int
+) -> Set[Tuple[int, int]]:
+    basin_positions = __basin_positions_around(heightmap, row, col)
+
+    neighbour_basin_pos = set()
+    for i, j in basin_positions:
+        neighbour_basin_pos.update([
+            pos for pos in __basin_positions_around_recursive(heightmap, i, j)
+            if pos not in basin_positions
+        ])
+
+    basin_positions.update(neighbour_basin_pos)
+
+    return basin_positions
+
+
+def __basin_positions_around(
+    heightmap: HeightMap,
+    row: int,
+    col: int
+) -> Set[Tuple[int, int]]:
+    """
+    Returns a list of positions from the given location that are valid for 
+    flowing to a low point.
+    """
+    heigh = heightmap[row][col]
+    positions = set()
+
+    left_height = __get_heightmap_height(heightmap, row, col - 1)
+    if heigh < left_height and left_height < 9:
+        positions.add((row, col - 1))
+
+    right_height = __get_heightmap_height(heightmap, row, col + 1)
+    if heigh < right_height and right_height < 9:
+        positions.add((row, col + 1))
+
+    up_height = __get_heightmap_height(heightmap, row - 1, col)
+    if heigh < up_height and up_height < 9:
+        positions.add((row - 1, col))
+
+    down_height = __get_heightmap_height(heightmap, row + 1, col)
+    if heigh < down_height and down_height < 9:
+        positions.add((row + 1, col))
+
+    return positions
