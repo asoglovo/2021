@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from syntax import (chars_to_coplete_chunk, compute_completion_score,
+from syntax import (chars_to_complete_chunk, compute_completion_score,
                     compute_line_syntax_error_score,
                     find_first_illegal_character)
 
@@ -33,7 +33,7 @@ class SyntaxTest(TestCase):
         for line, expected_completion in tests:
             self.assertEqual(
                 expected_completion,
-                chars_to_coplete_chunk(line)
+                chars_to_complete_chunk(line)
             )
 
     def test_completion_score(self):

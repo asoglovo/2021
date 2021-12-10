@@ -25,7 +25,7 @@ chunks = set(['()', '[]', '{}', '<>'])
 
 def compute_line_syntax_error_score(line: str) -> int:
     """
-    Computes the illegal syntax score of a line.
+    Computes the illegal syntax score of a line, as given by the score dictionary.
     """
     _, char = find_first_illegal_character(line)
     return score[char] if char else 0
@@ -33,10 +33,10 @@ def compute_line_syntax_error_score(line: str) -> int:
 
 def find_first_illegal_character(line: str) -> Tuple[int, str]:
     """
-    Finds the index of the first character and returns a tuple of the index and
-    the character.
+    Finds the index of the first illegal character and returns a tuple of the 
+    index and the character.
 
-    Returns (-1, None) if no wrong character is found.
+    Returns (-1, None) if no illegal character is found.
     """
     chars_stack = []
 
@@ -61,7 +61,10 @@ def __is_corrupted_line(line: str) -> bool:
     return char is not None
 
 
-def chars_to_coplete_chunk(line: str) -> str:
+def chars_to_complete_chunk(line: str) -> str:
+    """
+    Finds the missing closing characters to complete all open chunks in a line.
+    """
     if __is_corrupted_line(line):
         return ''
 
@@ -72,6 +75,9 @@ def chars_to_coplete_chunk(line: str) -> str:
 
 
 def __simplify_line(line: str) -> str:
+    """
+    Given a line, recursively simplifies the closed chunks until no more are found.
+    """
     if not __can_simplify_line(line):
         return line
 

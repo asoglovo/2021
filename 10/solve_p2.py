@@ -1,12 +1,12 @@
 import fileinput
 
-from syntax import chars_to_coplete_chunk, compute_completion_score
+from syntax import chars_to_complete_chunk, compute_completion_score
 
 if __name__ == '__main__':
     scores = []
 
     for line in fileinput.input():
-        completion = chars_to_coplete_chunk(line.strip())
+        completion = chars_to_complete_chunk(line.strip())
         score = compute_completion_score(completion)
 
         if score > 0:
@@ -16,4 +16,5 @@ if __name__ == '__main__':
     # taking the middle score.
     scores.sort()
     middle_score = scores[len(scores) // 2]
+
     print(f'Completion error score: {middle_score}')
