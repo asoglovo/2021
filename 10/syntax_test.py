@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from syntax import (compute_line_syntax_error_score,
+from syntax import (chars_to_coplete_chunk, compute_completion_score,
+                    compute_line_syntax_error_score,
                     find_first_illegal_character)
 
 
@@ -19,3 +20,33 @@ class SyntaxTest(TestCase):
             1197,
             compute_line_syntax_error_score(line)
         )
+
+    def test_complete_chunk(self):
+        tests = [
+            ('[({(<(())[]>[[{[]{<()<>>', '}}]])})]'),
+            ('[(()[<>])]({[<{<<[]>>(', ')}>]})'),
+            ('(((({<>}<{<{<>}{[]{[]{}', '}}>}>))))'),
+            ('{<[[]]>}<{[{[{[]{()[[[]', ']]}}]}]}>'),
+            ('<{([{{}}[<[[[<>{}]]]>[]]', '])}>'),
+        ]
+
+        for line, expected_completion in tests:
+            self.assertEqual(
+                expected_completion,
+                chars_to_coplete_chunk(line)
+            )
+
+    def test_completion_score(self):
+        tests = [
+            ('}}]])})]', 288957),
+            (')}>]})', 5566),
+            ('}}>}>))))', 1480781),
+            (']]}}]}]}>', 995444),
+            ('])}>', 294),
+        ]
+
+        for completion, expected_score in tests:
+            self.assertEqual(
+                expected_score,
+                compute_completion_score(completion)
+            )
