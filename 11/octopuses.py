@@ -18,9 +18,12 @@ def read_octopuses_grid() -> OctopusesGrid:
 
 def simulate_octopuses_step(grid: OctopusesGrid) -> Tuple[OctopusesGrid, FlashesCount]:
     """
+    Advances the simulation of the octopuses grid by one step. The grid is
+    updated in place.
+
     During a single simulation step, the following occurs:
 
-    - First, the energy level of each octopus increases by 1.
+    - The energy level of each octopus increases by 1.
 
     - Then, any octopus with an energy level greater than 9 flashes. This
       increases the energy level of all adjacent octopuses by 1, including
@@ -36,17 +39,26 @@ def simulate_octopuses_step(grid: OctopusesGrid) -> Tuple[OctopusesGrid, Flashes
 
     for i in range(grid_size):
         for j in range(grid_size):
-            energy = grid[i][j]
+            did_flash = __update_octopus_energy(grid, i, j)
 
-            will_flash = energy == 9
-            if will_flash:
+            if did_flash:
                 flashing_octopuses.add((i, j))
-
-            grid[i][j] = (energy + 1) % 10
 
     __simulate_adjacent_flashes(grid, flashing_octopuses)
 
     return grid, __count_flashes(grid)
+
+
+def __update_octopus_energy(grid: OctopusesGrid, i: int, j: int):
+    """
+    Updates the energy level of the octopus at the given position. 
+    Returns True if the octopus has flashed.
+    """
+    energy = grid[i][j]
+    will_flash = energy == 9
+    grid[i][j] = (energy + 1) % 10
+
+    return will_flash
 
 
 def __simulate_adjacent_flashes(
@@ -118,6 +130,10 @@ def __get_adjacent_positions(i: int, j: int) -> List[Tuple[int, int]]:
 
 
 def __count_flashes(grid: OctopusesGrid) -> FlashesCount:
+    """
+    Counts the number of octopuses that have flashed during the simulation.
+    These octopuses are those with an energy level of 0.
+    """
     flashes = 0
 
     for i in range(grid_size):
