@@ -1,8 +1,8 @@
 import fileinput
 from typing import List, Set, Tuple
 
-# Size of the octopuses grid
-size = 10
+grid_size = 10
+octopuses_count = grid_size * grid_size
 
 OctopusesGrid = List[List[int]]
 FlashesCount = int
@@ -34,8 +34,8 @@ def simulate_octopuses_step(grid: OctopusesGrid) -> Tuple[OctopusesGrid, Flashes
     """
     flashing_octopuses = set()
 
-    for i in range(size):
-        for j in range(size):
+    for i in range(grid_size):
+        for j in range(grid_size):
             energy = grid[i][j]
 
             will_flash = energy == 9
@@ -104,7 +104,7 @@ def update_adjacent_positions(
 
 def __get_adjacent_positions(i: int, j: int) -> List[Tuple[int, int]]:
     return filter(
-        lambda xy: 0 <= xy[0] < size and 0 <= xy[1] < size,
+        lambda xy: 0 <= xy[0] < grid_size and 0 <= xy[1] < grid_size,
         [
             (i - 1, j - 1),
             (i - 1, j),
@@ -120,14 +120,9 @@ def __get_adjacent_positions(i: int, j: int) -> List[Tuple[int, int]]:
 def __count_flashes(grid: OctopusesGrid) -> FlashesCount:
     flashes = 0
 
-    for i in range(size):
-        for j in range(size):
+    for i in range(grid_size):
+        for j in range(grid_size):
             if grid[i][j] == 0:
                 flashes += 1
 
     return flashes
-
-
-def __print_grid(grid: OctopusesGrid):
-    for row in grid:
-        print(' '.join(str(n) for n in row))
