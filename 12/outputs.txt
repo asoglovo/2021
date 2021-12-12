@@ -1,3 +1,11 @@
+PART ONE
+
 test_input -> 10
 test2_input -> 19
 test3_input -> 226
+
+PART TWO
+
+test_input -> 36
+test2_input -> 103
+test3_input -> 3509
