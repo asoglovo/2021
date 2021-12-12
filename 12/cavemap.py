@@ -62,28 +62,20 @@ def find_all_paths(
     Finds all possible paths going from 'start' to 'end' and don't visit small caves
     more than once. Big caves can be visited multiple times.
     """
-    return __extend_path([start], edges, validate_next_node)
+    def extend_path(path: Path) -> List[Path]:
+        paths = []
 
+        for node in __next_path_nodes(path, edges, validate_next_node):
+            if node == end:
+                paths.append(path + [node])
+            else:
+                paths.extend(
+                    extend_path(path + [node])
+                )
 
-def __extend_path(
-    path: Path,
-    edges: Set[MapBiEdge],
-    validate_next_node: ValidateNodeFn,
-) -> List[Path]:
-    """
-    Given a path, it extends it, recursively looking for all possible paths.
-    """
-    paths = []
+        return paths
 
-    for node in __next_path_nodes(path, edges, validate_next_node):
-        if node == end:
-            paths.append(path + [node])
-        else:
-            paths.extend(
-                __extend_path(path + [node], edges, validate_next_node)
-            )
-
-    return paths
+    return extend_path([start])
 
 
 def __next_path_nodes(
