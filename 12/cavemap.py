@@ -12,7 +12,7 @@ end = 'end'
 
 class MapBiEdge:
     """
-    Bidirectional edge: a-b == b-a and hash(a-b) == hash(b-a).
+    Bidirectional edge: 'a-b == b-a' and 'hash(a-b) == hash(b-a)'.
     """
 
     def __init__(self, node_a: Node, node_b: Node):
@@ -78,21 +78,17 @@ def find_all_paths(
 
     def next_path_nodes(path: Path) -> List[Node]:
         last_node = path[-1]
-        visitable_nodes = __visitable_nodes_from(last_node, edges)
+        visitable_nodes = visitable_nodes_from(last_node)
 
         return [
             node for node in visitable_nodes
             if validate_next_node(node, path)
         ]
 
+    def visitable_nodes_from(start: Node) -> List[Node]:
+        return [
+            edge.opposite_node(start)
+            for edge in edges if edge.has_node(start)
+        ]
+
     return extend_path([start])
-
-
-def __visitable_nodes_from(start: Node, edges: Set[MapBiEdge]) -> List[Node]:
-    """
-    Finds all nodes that can be reached from 'start' node.
-    """
-    return [
-        edge.opposite_node(start)
-        for edge in edges if edge.has_node(start)
-    ]
