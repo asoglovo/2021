@@ -61,7 +61,7 @@ def __vertical_fold(dots: Dots, y_axis: int) -> Dots:
     ])
 
 
-def print_dots(dots: Dots, width: int, height: int) -> None:
+def print_dots(dots: Dots, width: int, height: int):
     """
     Prints the given dots in a grid of the given width and height.
     """
