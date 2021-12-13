@@ -9,6 +9,12 @@ To run the solutions from the command line:
 $ python3 solve.py < input.py
 ```
 
+To run the unit tests that some solutions include:
+
+```sh
+$ python3 -m unittest <name>_test.py
+```
+
 ## File Naming
 
 - _test_input.txt_: the input data in the example.
