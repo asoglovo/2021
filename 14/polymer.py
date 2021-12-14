@@ -1,10 +1,9 @@
 import fileinput
 from collections import Counter, defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 InsertionRules = Dict[str, str]
 Polymer = str
-CompressedPolymer = Tuple[int, Dict[Polymer, List[int]]]
 
 
 def read_input() -> Tuple[str, InsertionRules]:
@@ -14,52 +13,52 @@ def read_input() -> Tuple[str, InsertionRules]:
     return template.strip(), rules
 
 
-def polymerize(polymer: Polymer, rules: InsertionRules) -> Polymer:
+def polymerize(polymer: Polymer, rules: InsertionRules, steps: int = 1) -> Polymer:
+    cache = {}
+
+    def expand(polymer: Polymer) -> Polymer:
+        assert len(polymer) == 2, f'Polymer {polymer} must be of length 2'
+        return polymer[0] + rules[polymer] + polymer[1]
+
+    def recur(polymer: Polymer, steps: int) -> Polymer:
+        cache_key = (polymer, steps)
+
+        if cache_key in cache:
+            return cache[cache_key]
+
+        if len(polymer) == 2:
+            if steps == 1:
+                cache[cache_key] = expand(polymer)
+                return cache[cache_key]
+            else:
+                expanded = expand(polymer)
+                cache[cache_key] = concat_polymers(
+                    recur(expanded[:2], steps - 1),
+                    recur(expanded[1:], steps - 1)
+                )
+                return cache[cache_key]
+
+        cache[cache_key] = concat_polymers(
+            recur(polymer[:2], steps),
+            recur(polymer[1:], steps)
+        )
+        return cache[cache_key]
+
+    return recur(polymer, steps)
+
+
+def concat_polymers(a: Polymer, b: Polymer) -> Polymer:
+    assert a[-1] == b[0], f'Cannot concatenate {a} and {b}'
+    return a + b[1:]
+
+
+def size_after_steps(initial_length: int, steps: int) -> int:
     """
-    Produces a new polymer chain result of applying the insertion rules to the input polymer.
-    The resulting polymer has a length of 2n - 1, being n the length of the input polymer.
+    Calculates the size of the polymer after a given number of steps given the
+    initial length of the polymer.
     """
-    length, compressed = compress_polymer(polymer)
-    extended = dict(
-        [(pattern[0] + rules[pattern] + pattern[1], indices)
-         for pattern, indices in compressed.items()]
-    )
-
-    return decompress_polymer((length, extended))
-
-
-def polymerize_steps(polymer: Polymer, rules: InsertionRules, steps: int) -> Polymer:
-    compressed = compress_polymer(polymer)
-
-    for step in range(steps):
-        compressed = __polymerize_compressed(compressed, rules)
-        if step % 10 == 0:
-            print(step, ':', compressed)
-
-    return decompress_polymer(compressed)
-
-
-def __polymerize_compressed(
-    polymer: CompressedPolymer,
-    rules: InsertionRules
-) -> CompressedPolymer:
-    length, compressed = polymer
-    polymerized = defaultdict(list)
-
-    for polymer, indices in compressed.items():
-        one, two = __expand_polymer(polymer, rules)
-
-        polymerized[one].extend([2 * i for i in indices])
-        polymerized[two].extend([2 * i + 1 for i in indices])
-
-    return (2 * length, polymerized)
-
-
-def __expand_polymer(polymer: Polymer, rules: InsertionRules) -> Tuple[Polymer, Polymer]:
-    assert len(polymer) == 2, 'Polymer must be of length 2'
-    middle = rules[polymer]
-
-    return (polymer[0] + middle, middle + polymer[1])
+    exp = 2**steps
+    return exp * initial_length - exp + 1
 
 
 def polymer_score(polymer: Polymer):
@@ -68,29 +67,3 @@ def polymer_score(polymer: Polymer):
     score = most_common[1] - least_common[1]
 
     return most_common, least_common, score
-
-
-def compress_polymer(polymer: Polymer) -> CompressedPolymer:
-    pairs = __parwise(polymer)
-    compressed = defaultdict(list)
-
-    for i, pair in enumerate(pairs):
-        compressed[pair].append(i)
-
-    return len(pairs), compressed
-
-
-def decompress_polymer(polymer: CompressedPolymer) -> Polymer:
-    length, compressed = polymer
-    decompressed = [None] * length
-
-    for pattern, indices in compressed.items():
-        for index in indices:
-            decompressed[index] = pattern[:-
-                                          1] if index < length - 1 else pattern
-
-    return ''.join(decompressed)
-
-
-def __parwise(polymer: Polymer):
-    return [polymer[i-1:i+1] for i in range(1, len(polymer))]
