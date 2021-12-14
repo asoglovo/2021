@@ -24,13 +24,6 @@ class TestPolymer(TestCase):
         'CN': 'C'
     }
 
-    # compressed = (
-    #     8,
-    #     {'NC': [0, 7], 'CN': [1], 'NB': [2], 'BC': [3],
-    #      'CH': [4], 'HB': [5], 'BN': [6]}
-    # )
-    # decompressed = 'NCNBCHBNC'
-
     cases = (
         ('NN', 1, 'NCN'),
         ('NCN', 1, 'NBCCN'),
@@ -47,21 +40,3 @@ class TestPolymer(TestCase):
                 expected_poly,
                 polymerize(in_poly, self.rules, steps)
             )
-
-    # def test_compress_polymer(self):
-    #     self.assertEqual(
-    #         self.compressed,
-    #         compress_polymer(self.decompressed)
-    #     )
-
-    # def test_decompress_polymer(self):
-    #     self.assertEqual(
-    #         self.decompressed,
-    #         decompress_polymer(self.compressed)
-    #     )
-
-    # def test_polimerize_steps(self):
-    #     self.assertEqual(
-    #         'NBBBCNCCNBBNBNBBCHBHHBCHB',
-    #         polymerize_steps('NNCB', self.rules, 3)
-    #     )
