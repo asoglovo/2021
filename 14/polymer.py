@@ -15,6 +15,7 @@ def read_input() -> Tuple[str, InsertionRules]:
 
 def polymerize(polymer: Polymer, rules: InsertionRules, steps: int = 1) -> Polymer:
     cache = {}
+    hits = 0
 
     def expand(polymer: Polymer) -> Polymer:
         assert len(polymer) == 2, f'Polymer {polymer} must be of length 2'
@@ -22,8 +23,10 @@ def polymerize(polymer: Polymer, rules: InsertionRules, steps: int = 1) -> Polym
 
     def recur(polymer: Polymer, steps: int) -> Polymer:
         cache_key = (polymer, steps)
+        nonlocal hits
 
         if cache_key in cache:
+            hits += 1
             return cache[cache_key]
 
         if len(polymer) == 2:
@@ -44,7 +47,9 @@ def polymerize(polymer: Polymer, rules: InsertionRules, steps: int = 1) -> Polym
         )
         return cache[cache_key]
 
-    return recur(polymer, steps)
+    result = recur(polymer, steps)
+    print(f'hits: {hits}')
+    return result
 
 
 def concat_polymers(a: Polymer, b: Polymer) -> Polymer:
