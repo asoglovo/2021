@@ -27,7 +27,7 @@ def find_safest_path(risk_map: RiskMap) -> Tuple[Path, int]:
         i, j = position
         return risk_map[i][j]
 
-    def nodes_reachable_from(pos: Tuple[int, int]) -> List[Tuple[int, int]]:
+    def nodes_reachable_from(pos: Tuple[int, int]) -> Path:
         i, j = pos
         return filter(
             lambda ij: 0 <= ij[0] < size and 0 <= ij[1] < size,
@@ -39,26 +39,42 @@ def find_safest_path(risk_map: RiskMap) -> Tuple[Path, int]:
             ]
         )
 
-    # visited = set()
-    path = []
+    def trace_safest_path_back(risks, path: Path) -> Path:
+        while path[-1] != start:
+            best_node, _ = min(
+                [
+                    (node, risks[node])
+                    for node in nodes_reachable_from(path[-1])
+                ],
+                key=lambda x: x[1]
+            )
+            path.append(best_node)
+
+        return path
+
     nodes = list([(i, j) for i in range(size) for j in range(size)])
     risks = defaultdict(lambda: infinity)
-    risks[start] = 0  # risk_at(start)
-    # risks = dict(
-    #     [(node, risk_at(start)) if node == start else (node, infinity)
-    #      for node in nodes]
-    # )
+    risks[start] = 0
 
     for node in nodes:
         for neighbor in nodes_reachable_from(node):
             risks[node] = min(risks[node], risks[neighbor] + risk_at(node))
 
-    for i in range(size):
-        for j in range(size):
-            print(f'{risks[(i, j)]:2}', end=' ')
-        print()
+    # for i in range(size):
+    #     for j in range(size):
+    #         print(f'{risks[(i, j)]:3}', end=' ')
+    #     print()
+
+    path = trace_safest_path_back(risks, [end])
+    path.reverse()
 
     return path, risks[end]
+
+
+def risk_for_path(risk_map: RiskMap, path: Path) -> int:
+    return sum(
+        risk_map[node[0]][node[1]] for node in path if node != (0, 0)
+    )
 
 
 def print_path(risk_map: RiskMap, path: Path):

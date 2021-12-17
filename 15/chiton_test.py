@@ -18,16 +18,10 @@ class ChitonTest(TestCase):
         [2, 3, 1, 1, 9, 4, 4, 5, 8, 1]
     ]
     shortest_path = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (2, 3),
-                     (2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (4, 7), (5, 7),
+                     (2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (4, 7), (4, 8),
                      (5, 8), (6, 8), (7, 8), (8, 8), (8, 9), (9, 9)]
 
     def test_find_path(self):
         path, risk = find_safest_path(self.risk_map)
-
-        print('WANT:', 40)
-        print_path(self.risk_map, self.shortest_path)
-        print('GOT:', risk)
-        print_path(self.risk_map, path)
-
         self.assertEqual(self.shortest_path, path)
         self.assertEqual(40, risk)
