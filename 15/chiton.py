@@ -23,7 +23,7 @@ def find_safest_path(risk_map: RiskMap) -> Tuple[Path, int]:
     start = (0, 0)
     end = (size - 1, size - 1)
 
-    def risk_at(position):
+    def risk_at(position: Tuple[int, int]) -> int:
         i, j = position
         return risk_map[i][j]
 
@@ -56,7 +56,7 @@ def find_safest_path(risk_map: RiskMap) -> Tuple[Path, int]:
     risks = defaultdict(lambda: infinity)
     risks[start] = 0
 
-    for node in nodes:
+    for node in nodes[1:]:
         for neighbor in nodes_reachable_from(node):
             risks[node] = min(risks[node], risks[neighbor] + risk_at(node))
 
