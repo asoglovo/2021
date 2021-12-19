@@ -1,8 +1,9 @@
-from chiton import find_safest_path, print_path, read_risk_map
+from chiton import find_safest_path
+from riskmap import RiskMap
 
 if __name__ == '__main__':
-    risk_map = read_risk_map()
+    risk_map = RiskMap.from_input()
     path, score = find_safest_path(risk_map)
 
-    print_path(risk_map, path)
+    risk_map.print_path(path)
     print(f'Risk score: {score}')
