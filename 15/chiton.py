@@ -14,20 +14,14 @@ def find_safest_path(risk_map) -> Tuple[Path, int]:
     return dijkstra(risk_map)
 
 
-def print_risks(size: int, risks, path):
-    for i in range(size):
-        for j in range(size):
-            if (i, j) in path:
-                print(f'[{risks[(i, j)]:3}]', end='')
-            else:
-                print(f' {risks[(i, j)]:3} ', end='')
-        print()
-
-
 def dijkstra(risk_map) -> Tuple[Path, int]:
     """
     Finds the shortest path from the top-left corner to the bottom-right using
     DiJkstra's algorithm.
+
+    The risk map must implement the following methods to work with this implementation:
+        - __getitem__(index: Position) -> int
+        - nodes_reachable_from(pos: Position) -> Path
     """
     size = risk_map.size
     start = (0, 0)
@@ -66,17 +60,11 @@ def dijkstra(risk_map) -> Tuple[Path, int]:
     return path, distances[end]
 
 
-# nums = [i for i in range(1, 10)]
-
-
-# def risk_at_extended(risk_map: RiskMap, position: Position) -> int:
-#     size = len(risk_map)
-#     i, j = position
-#     times_bottom = i // size
-#     times_right = j // size
-
-#     value = risk_map[i % size][j % size]
-#     idx = nums.index(value)
-#     new_idx = (idx + times_bottom + times_right) % len(nums)
-
-#     return nums[new_idx]
+def __print_risks(size: int, risks, path):
+    for i in range(size):
+        for j in range(size):
+            if (i, j) in path:
+                print(f'[{risks[(i, j)]:3}]', end='')
+            else:
+                print(f' {risks[(i, j)]:3} ', end='')
+        print()
