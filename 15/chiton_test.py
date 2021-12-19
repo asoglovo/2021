@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from chiton import find_safest_path, print_path
+from chiton import find_safest_path
 
 
 class ChitonTest(TestCase):
@@ -18,11 +18,12 @@ class ChitonTest(TestCase):
         [2, 3, 1, 1, 9, 4, 4, 5, 8, 1]
     ]
     shortest_path = [(0, 0), (1, 0), (2, 0), (2, 1), (2, 2), (2, 3),
-                     (2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (4, 7), (4, 8),
+                     (2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (4, 7), (5, 7),
                      (5, 8), (6, 8), (7, 8), (8, 8), (8, 9), (9, 9)]
 
     def test_find_path(self):
         path, risk = find_safest_path(self.risk_map)
+
         self.assertEqual(self.shortest_path, path)
         self.assertEqual(40, risk)
 
@@ -37,7 +38,6 @@ class ChitonTest(TestCase):
                          (2, 2), (3, 2), (3, 3)]
 
         path, risk = find_safest_path(risk_map)
-        print_path(risk_map, path)
 
         self.assertEqual(shortest_path, path)
         self.assertEqual(10, risk)
