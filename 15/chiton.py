@@ -1,12 +1,13 @@
 from collections import defaultdict
-from typing import Tuple
+from typing import List, Tuple
 
-from riskmap import Path, RiskMap
+Position = Tuple[int, int]
+Path = List[Position]
 
 infinity = float('inf')
 
 
-def find_safest_path(risk_map: RiskMap) -> Tuple[Path, int]:
+def find_safest_path(risk_map) -> Tuple[Path, int]:
     """
     Returns the safest path through the risk map along with its risk score.
     """
@@ -23,7 +24,7 @@ def print_risks(size: int, risks, path):
         print()
 
 
-def dijkstra(risk_map: RiskMap) -> Tuple[Path, int]:
+def dijkstra(risk_map) -> Tuple[Path, int]:
     """
     Finds the shortest path from the top-left corner to the bottom-right using
     DiJkstra's algorithm.
